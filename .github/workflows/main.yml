@@ -33,7 +33,6 @@ jobs:
       MY_SECRET   : ${{secrets.commit_secret}}
       USER_NAME   : kuihao
       USER_EMAIL  : kuihaochang@gmail.com
-      PUBLISH_DIR : ./dist
     
     strategy:
       # Use `jobs.<job_id>.strategy.matrix`  
@@ -53,7 +52,9 @@ jobs:
       
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3 # to check details: https://github.com/actions/checkout
-      
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
       # Install node.js
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
@@ -85,20 +86,13 @@ jobs:
       # Method is referenced from https://reurl.cc/Go9k6x
       - name: Commit files
         run: |
-          git init
-          git config --local user.name $USER_NAME
-          git config --local user.email $USER_EMAIL
+          git config --global user.name $USER_NAME
+          git config --global user.email $USER_EMAIL
           ls -a
-          echo 0
           git status
+          git pull
           echo 1
-          git remote add origin https://$MY_SECRET@github.com/$GITHUB_REPOSITORY.git
-          echo 2
           git checkout -b gh-pages
-          echo 3
-          git add --all
-          echo 4
-          git commit -m "Automatically deploy to Github pages"
-          echo 5
-          git push origin gh-pages -f
+          echo 2
+          git push --set-upstream origin gh-pages
           echo Deploy gh-pages complete. 😎
