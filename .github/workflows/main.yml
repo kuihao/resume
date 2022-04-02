@@ -31,7 +31,7 @@ jobs:
     # Define environment variables
     env:
       MY_SECRET   : ${{secrets.commit_secret}}
-      USER_NAME   : Kuihao_Notebook_Win10
+      USER_NAME   : kuihao
       USER_EMAIL  : kuihaochang@gmail.com
       PUBLISH_DIR : ./dist # Generated from  
     
