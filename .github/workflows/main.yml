@@ -70,14 +70,14 @@ jobs:
       #   https://github.com/easingthemes/ssh-deploy/issues/45
       - name: npm init
         run: |
-        npm init -y
-        dir
+          npm init -y
+          dir
 
       # Creates a build directory with a production build of your app.
       - name: Run build task
         run: |
-        npm run build --if-present
-        dir
+          npm run build --if-present
+          dir
 
       # Use peaceiris actions-gh-pages to deploy dist to gh-pages
       #- name: Deploy
