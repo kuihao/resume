@@ -28,10 +28,10 @@ jobs:
     runs-on: ubuntu-20.04 # or ubuntu-latest
 
     # Define environment variables
-    env:
-      MY_SECRET   : ${{secrets.commit_secret}}
-      USER_NAME   : Kuihao_notebook_win10
-      USER_EMAIL  : kuihaochang@gmail.com
+    #env:
+    #  MY_SECRET   : ${{secrets.commit_secret}}
+    #  USER_NAME   : <Your Name>
+    #  USER_EMAIL  : <Your github register email>
     
     # Use `jobs.<job_id>.strategy.matrix`  
     # to define a matrix of different job configurations. 
@@ -55,26 +55,17 @@ jobs:
       #  [!] if no arguments here, only pull origin main fetch-depth=1 
 
       # Use peaceiris actions-gh-pages to deploy dist to gh-pages
-      #- name: Deploy
-      #  uses: peaceiris/actions-gh-pages@v3
-      #  with:
-      #    # github will auto-generate a token for this job and use it 
-      #    github_token: ${{ secrets.GITHUB_TOKEN }}
-      #    publish_dir: ./dist
-      #    commit_message: ${{ github.event.head_commit.message }}
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          # github will auto-generate a token for this job and use it 
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public # default
+          commit_message: ${{ github.event.head_commit.message }}
       
-      # 
-      - name: Commit files
-        run: |
-          git config --local user.name $USER_NAME
-          git config --local user.email $USER_EMAIL
-          git status
-          echo 1
-          git branch
-          echo 2
-          git checkout -b gh-pages
-          echo 3
-          git branch
-          echo 4
-          git push --force --set-upstream origin gh-pages
-          echo Deploy gh-pages complete. 😎
+      # The easiest way to implement  
+      #- name: Branch gh-pages and push -f
+      #  run: |
+      #    git checkout -b gh-pages
+      #    git push --force --set-upstream origin gh-pages
+      #    echo Deploy gh-pages complete. 😎
