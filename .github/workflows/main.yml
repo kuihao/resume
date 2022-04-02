@@ -25,9 +25,7 @@ jobs:
     name: Build and deploy gh-pages
     
     # The type of runner that the job will run on
-    runs-on: ubuntu-20.04
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
+    runs-on: ubuntu-20.04 # ubuntu-latest
 
     # Define environment variables
     #env:
@@ -40,9 +38,9 @@ jobs:
     # A matrix allows you to create multiple jobs by 
     # performing variable substitution in a single job definition.
     # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstrategy
-    #strategy:
-    #  matrix:
-    #    node-version: [10.x]
+    strategy:
+      matrix:
+        node-version: [10.x]
     
     # Steps represent a sequence of tasks that will be executed as part of the job
     # * `Steps` can do three types of behaviors:
@@ -52,23 +50,26 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it.
       # To know more details: https://github.com/actions/checkout
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3 
+      
+      # Install node.js
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
         with:
-          submodules: true  # Fetch Hugo themes (true OR recursive)
-          fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+          node-version: ${{ matrix.node-version }}
 
-      - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v2
-        with:
-          hugo-version: '0.85.0'
+      - name: Install Node.js npm (Node Package Manager) dependencies 
+        run: npm install
 
-      - name: Build
-        run: hugo --minify
+      - name: npm init
+        run: npm init -y
+
+      - name: Run build task
+        run: npm run build --if-present
 
       # Use peaceiris actions-gh-pages to deploy dist to gh-pages
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.ref == 'refs/heads/main' }}
         with:
           # github will auto-generate a token for this job and use it 
           github_token: ${{ secrets.GITHUB_TOKEN }}
