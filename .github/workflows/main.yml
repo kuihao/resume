@@ -29,10 +29,6 @@ jobs:
     #runs-on: ubuntu-latest
 
     # ???
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
-
-    # ???
     #env:
     #  MY_SECRET   : ${{secrets.commit_secret}}
     #  USER_NAME   : githubaction
@@ -52,24 +48,49 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3 # to check details: https://github.com/actions/checkout
-        with:
-            submodules: true  # Fetch Hugo themes (true OR recursive)
-            fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+      
+      # Runs a single command using the runners shell
+      #- name: Run a one-line script
+      #  run: echo Hello, world!
 
-      - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v2
-        with:
-          hugo-version: '0.85.0'
+      # Runs a set of commands using the runners shell
+      #- name: Run a multi-line script
+      #  run: |
+      #    echo Add other actions to build,
+      #    echo test, and deploy your project.
 
-      - name: Build
-        run: hugo --minify
+      # To automatically run my commits from main branch to gh-pages branch
+      
+      # Install node.js
+      - uses: actions/setup-node@v1
 
+      #- name: Use Node.js ${{ matrix.node-version }}
+      #  uses: actions/setup-node@v1
+      #  with:
+      #    node-version: ${{ matrix.node-version }}
+
+      - name: Install Node.js dependencies (npm, Node Package Manager)
+        run: npm install
+        #env:
+        #  CI: false
+      
+      - name: Creates a build directory with a production build of your app.
+        run: npm run build
+        env:
+          CI: false
+
+      #- name: npm run build
+      #  run: |
+      #    npm run gulp m
+      #    npm run build
+      
+      # use actions-gh-pages to deploy dist to gh-pages
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.ref == 'refs/heads/main' }}
         with:
+          # github will auto-generate a token for this job and use it 
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+          publish_dir: ./dist
 
       #- name: Commit files
       #  run: |
