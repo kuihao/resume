@@ -29,11 +29,11 @@ jobs:
     #runs-on: ubuntu-latest
 
     # Define environment variables
-    #env:
-    #  MY_SECRET   : ${{secrets.commit_secret}}
-    #  USER_NAME   : kuihao
-    #  USER_EMAIL  : kuihaochang@gmail.com
-    #  PUBLISH_DIR : ./dist # Generated from  
+    env:
+      MY_SECRET   : ${{secrets.commit_secret}}
+      USER_NAME   : kuihao
+      USER_EMAIL  : kuihaochang@gmail.com
+      PUBLISH_DIR : ./dist # Generated from  
     
     strategy:
       # Use `jobs.<job_id>.strategy.matrix`  
@@ -61,43 +61,37 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install Node.js npm (Node Package Manager) dependencies 
-        run: |
-          dir
-          npm install
-          dir
+        run: npm install
 
       # The most important step: create package.json
       #   https://github.com/easingthemes/ssh-deploy/issues/45
       - name: npm init
-        run: |
-          npm init -y
-          dir
+        run: npm init -y
 
       # Creates a build directory with a production build of your app.
       - name: Run build task
-        run: |
-          npm run build --if-present
-          dir
+        run: npm run build --if-present
 
       # Use peaceiris actions-gh-pages to deploy dist to gh-pages
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          # github will auto-generate a token for this job and use it 
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+      #- name: Deploy
+      #  uses: peaceiris/actions-gh-pages@v3
+      #  with:
+      #    # github will auto-generate a token for this job and use it 
+      #    github_token: ${{ secrets.GITHUB_TOKEN }}
+      #    publish_dir: ./dist
       
-      ## Method is referenced from https://reurl.cc/Go9k6x
-      #- name: Commit files
-      #  run: |
-      #    cd $PUBLISH_DIR
-      #    git init
-      #    git config --local user.name $USER_NAME
-      #    git config --local user.email $USER_EMAIL
-      #    git status
-      #    git remote add origin https://$MY_SECRET@github.com/$GITHUB_REPOSITORY.git
-      #    git checkout -b gh-pages
-      #    git add --all
-      #    git commit -m "Automatically deploy to Github pages"
-      #    git push origin gh-pages -f
-      #    echo 😎 deploy gh-pages complete.
+      # Method is referenced from https://reurl.cc/Go9k6x
+      - name: Commit files
+        run: |
+          mkdir $PUBLISH_DIR
+          cd $PUBLISH_DIR
+          git init
+          git config --local user.name $USER_NAME
+          git config --local user.email $USER_EMAIL
+          git status
+          git remote add origin https://$MY_SECRET@github.com/$GITHUB_REPOSITORY.git
+          git checkout -b gh-pages
+          git add --all
+          git commit -m "Automatically deploy to Github pages"
+          git push origin gh-pages -f
+          echo 😎 deploy gh-pages complete.
