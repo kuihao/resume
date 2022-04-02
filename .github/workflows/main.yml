@@ -34,10 +34,10 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     
-    # ???
-    strategy:
-      matrix:
-        node-version: [10.x]
+    # ??? global variables?
+    #strategy:
+    #  matrix:
+    #    node-version: [10.x]
     
     # Steps represent a sequence of tasks that will be executed as part of the job
     # `Steps` can do three types of behaviors:
@@ -59,27 +59,44 @@ jobs:
       #    echo test, and deploy your project.
 
       # To automatically run my commits from main branch to gh-pages branch
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      
+      # Install node.js
+      - uses: actions/setup-node@v1
+
+      #- name: Use Node.js ${{ matrix.node-version }}
+      #  uses: actions/setup-node@v1
+      #  with:
+      #    node-version: ${{ matrix.node-version }}
+
+      - name: Install Node.js dependencies (npm, Node Package Manager)
+        run: npm install
+      
+      - name: Creates a build directory with a production build of your app.
+        run: npm run build
+
+      #- name: npm run build
+      #  run: |
+      #    npm run gulp m
+      #    npm run build
+      
+      # use actions-gh-pages to deploy dist to gh-pages
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          node-version: ${{ matrix.node-version }}
-      - name: npm install
-        run: |
-          npm install
-      - name: npm run build
-        run: |
-          npm run gulp m
-          npm run build
-      - name: Commit files
-        run: |
-          cd $PUBLISH_DIR
-          git init
-          git config --local user.name $USER_NAME
-          git config --local user.email $USER_EMAIL
-          git status
-          git remote add origin https://$MY_SECRET@github.com/$GITHUB_REPOSITORY.git
-          git checkout -b gh-pages
-          git add --all
-          git commit -m "deploy to Github pages"
-          git push origin gh-pages -f
-          echo 🤘 deploy gh-pages complete.
+          # github will auto-generate a token for this job and use it 
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+
+      #- name: Commit files
+      #  run: |
+      #    cd $PUBLISH_DIR
+      #    git init
+      #    git config --local user.name $USER_NAME
+      #    git config --local user.email $USER_EMAIL
+      #    git status
+      #    git remote add origin https://$MY_SECRET@github.com/$GITHUB_REPOSITORY.git
+      #    git checkout -b gh-pages
+      #    git add --all
+      #    git commit -m "deploy to Github pages"
+      #    git push origin gh-pages -f
+      #    echo 😎 deploy gh-pages complete.
