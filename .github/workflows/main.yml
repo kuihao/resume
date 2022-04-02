@@ -87,9 +87,8 @@ jobs:
           ls -a
           git config --local user.name $USER_NAME
           git config --local user.email $USER_EMAIL
-          git status
           echo 1
-          git remote add origin https://$MY_SECRET@github.com/$GITHUB_REPOSITORY.git
+          git status
           echo 2
           git checkout -b gh-pages
           echo 3
