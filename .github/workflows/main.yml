@@ -56,23 +56,23 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
 
       # Install node.js
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Install Node.js npm (Node Package Manager) dependencies 
-        run: npm install
-
-      # The most important step: create package.json
-      #   https://github.com/easingthemes/ssh-deploy/issues/45
-      - name: npm init
-        run: npm init -y
-
-      # Creates a build directory with a production build of your app.
-      - name: Run build task
-        run: |
-          npm run build --if-present
+      #- name: Use Node.js ${{ matrix.node-version }}
+      #  uses: actions/setup-node@v1
+      #  with:
+      #    node-version: ${{ matrix.node-version }}
+      #
+      #- name: Install Node.js npm (Node Package Manager) dependencies 
+      #  run: npm install
+      #
+      ## The most important step: create package.json
+      ##   https://github.com/easingthemes/ssh-deploy/issues/45
+      #- name: npm init
+      #  run: npm init -y
+      #
+      ## Creates a build directory with a production build of your app.
+      #- name: Run build task
+      #  run: |
+      #    npm run build --if-present
 
       # Use peaceiris actions-gh-pages to deploy dist to gh-pages
       #- name: Deploy
@@ -94,5 +94,7 @@ jobs:
           echo 1
           git checkout -b gh-pages
           echo 2
+          git branch
+          echo 3
           git push --set-upstream origin gh-pages
           echo Deploy gh-pages complete. 😎
