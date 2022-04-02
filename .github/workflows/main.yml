@@ -36,9 +36,9 @@ jobs:
     #  PUBLISH_DIR : ./dist
     
     # ??? global variables?
-    #strategy:
-    #  matrix:
-    #    node-version: [10.x]
+    strategy:
+      matrix:
+        node-version: [10.x]
     
     # Steps represent a sequence of tasks that will be executed as part of the job
     # `Steps` can do three types of behaviors:
@@ -49,36 +49,25 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3 # to check details: https://github.com/actions/checkout
       
-      # Runs a single command using the runners shell
-      #- name: Run a one-line script
-      #  run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      #- name: Run a multi-line script
-      #  run: |
-      #    echo Add other actions to build,
-      #    echo test, and deploy your project.
-
-      # To automatically run my commits from main branch to gh-pages branch
-      
       # Install node.js
-      - uses: actions/setup-node@v1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
 
-      #- name: Use Node.js ${{ matrix.node-version }}
-      #  uses: actions/setup-node@v1
-      #  with:
-      #    node-version: ${{ matrix.node-version }}
+      - name: Install Node.js npm (Node Package Manager) dependencies 
+        run: npm install
 
-      - name: Install Node.js dependencies (npm, Node Package Manager)
-        run: npm ci
-        #run: npm install
-        #env:
-        #  CI: false
+      - name: npm init
+        run: npm init -y
+
+      - name: Run build task
+        run: npm run build --if-present
       
-      - name: Creates a build directory with a production build of your app.
-        run: npm run build
-        #env:
-        #  CI: false
+      #- name: Creates a build directory with a production build of your app.
+      #  run: npm run build
+      #  env:
+      #    CI: false
 
       #- name: npm run build
       #  run: |
