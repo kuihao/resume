@@ -73,7 +73,7 @@ jobs:
         with:
           # github will auto-generate a token for this job and use it 
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public # default
+          publish_dir: ./dist
           #commit_message: ${{ github.event.head_commit.message }}
       
       # The easiest way to implement  
