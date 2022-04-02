@@ -29,19 +29,19 @@ jobs:
     #runs-on: ubuntu-latest
 
     # Define environment variables
-    env:
-      MY_SECRET   : ${{secrets.commit_secret}}
-      USER_NAME   : kuihao
-      USER_EMAIL  : kuihaochang@gmail.com
+    #env:
+    #  MY_SECRET   : ${{secrets.commit_secret}}
+    #  USER_NAME   : kuihao
+    #  USER_EMAIL  : kuihaochang@gmail.com
     
-    strategy:
+    #strategy:
       # Use `jobs.<job_id>.strategy.matrix`  
       # to define a matrix of different job configurations. 
       # A matrix allows you to create multiple jobs by 
       # performing variable substitution in a single job definition.
       # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstrategy
-      matrix:
-        node-version: [10.x]
+    #  matrix:
+    #    node-version: [10.x]
     
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -52,8 +52,8 @@ jobs:
       
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3 # to check details: https://github.com/actions/checkout
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
+        #with:
+        #  ref: gh-pages
 
       # Install node.js
       #- name: Use Node.js ${{ matrix.node-version }}
@@ -86,15 +86,13 @@ jobs:
       # Method is referenced from https://reurl.cc/Go9k6x
       - name: Commit files
         run: |
-          git config --global user.name $USER_NAME
-          git config --global user.email $USER_EMAIL
-          ls -a
           git status
-          git pull
           echo 1
-          git checkout -b gh-pages
-          echo 2
           git branch
+          echo 2
+          git checkout -b gh-pages
           echo 3
-          git push --set-upstream origin gh-pages
+          git branch
+          echo 4
+          git push --force --set-upstream origin gh-pages
           echo Deploy gh-pages complete. 😎
