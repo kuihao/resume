@@ -33,15 +33,6 @@ jobs:
     #  USER_NAME   : <Your Name>
     #  USER_EMAIL  : <Your github register email>
     
-    # Use `jobs.<job_id>.strategy.matrix`  
-    # to define a matrix of different job configurations. 
-    # A matrix allows you to create multiple jobs by 
-    # performing variable substitution in a single job definition.
-    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstrategy
-    strategy:
-      matrix:
-        node-version: [10.x]
-    
     # Steps represent a sequence of tasks that will be executed as part of the job
     # * `Steps` can do three types of behaviors:
     #   * `run` commands (CLI commands in OS)
@@ -52,33 +43,51 @@ jobs:
       # To know more details: https://github.com/actions/checkout
       - uses: actions/checkout@v3 
       
-      # Install node.js
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Install Node.js npm (Node Package Manager) dependencies 
-        run: npm install
-
-      - name: npm init
-        run: npm init -y
-
-      - name: Run build task
-        run: npm run build --if-present
-
-      # Use peaceiris actions-gh-pages to deploy dist to gh-pages
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          # github will auto-generate a token for this job and use it 
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          #commit_message: ${{ github.event.head_commit.message }}
-      
       # The easiest way to implement  
-      #- name: Branch gh-pages and push -f
-      #  run: |
-      #    git checkout -b gh-pages
-      #    git push --force --set-upstream origin gh-pages
-      #    echo Deploy gh-pages complete. 😎
+      - name: Branch gh-pages and push -f
+        run: |
+          git checkout -b gh-pages
+          git push --force --set-upstream origin gh-pages
+          echo Deploy gh-pages complete. 😎
+
+#jobs:
+#  build:
+#    name: Build and deploy gh-pages
+#    
+#    runs-on: ubuntu-20.04 # ubuntu-latest
+# 
+#    # Use `jobs.<job_id>.strategy.matrix`  
+#    # to define a matrix of different job configurations. 
+#    # A matrix allows you to create multiple jobs by 
+#    # performing variable substitution in a single job definition.
+#    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstrategy
+#    strategy:
+#      matrix:
+#        node-version: [10.x]
+#    
+#    steps:
+#      - uses: actions/checkout@v3 
+#      
+#      # Install node.js
+#      - name: Use Node.js ${{ matrix.node-version }}
+#        uses: actions/setup-node@v1
+#        with:
+#          node-version: ${{ matrix.node-version }}
+#
+#      - name: Install Node.js npm (Node Package Manager) dependencies 
+#        run: npm install
+#
+#      - name: npm init
+#        run: npm init -y
+#
+#      - name: Run build task
+#        run: npm run build --if-present
+#
+#      # Use peaceiris actions-gh-pages to deploy dist to gh-pages
+#      - name: Deploy
+#        uses: peaceiris/actions-gh-pages@v3
+#        with:
+#          # github will auto-generate a token for this job and use it 
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          publish_dir: ./dist
+#          #commit_message: ${{ github.event.head_commit.message }}
