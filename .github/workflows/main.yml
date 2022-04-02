@@ -1,6 +1,6 @@
-# HiHi I'm Kuihao
-# This is a workflow to help you define actions which you want to deploy the pages on main branch
-# And the code below is edited from https://reurl.cc/Go9k6x and https://github.com/easingthemes/ssh-deploy/issues/45
+# HiHi~ I'm Kuihao
+# This is a workflow to help you define actions which you want to deploy 
+# the pages on main branch.
 
 # The name of your workflow
 name: deploy gh-pages
@@ -17,62 +17,42 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   #workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
-# Define a single job below:
+# A workflow run is made up of one or more jobs that can run sequentially 
+# or in parallel. Define a single job below:
 jobs:
   # This workflow contains a single job called "build"
   build:
     name: Build and deploy gh-pages
     
     # The type of runner that the job will run on
-    runs-on: ubuntu-20.04
-    #runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04 # or ubuntu-latest
 
     # Define environment variables
-    #env:
-    #  MY_SECRET   : ${{secrets.commit_secret}}
-    #  USER_NAME   : kuihao
-    #  USER_EMAIL  : kuihaochang@gmail.com
+    env:
+      MY_SECRET   : ${{secrets.commit_secret}}
+      USER_NAME   : Kuihao_notebook_win10
+      USER_EMAIL  : kuihaochang@gmail.com
     
+    # Use `jobs.<job_id>.strategy.matrix`  
+    # to define a matrix of different job configurations. 
+    # A matrix allows you to create multiple jobs by 
+    # performing variable substitution in a single job definition.
+    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstrategy
     #strategy:
-      # Use `jobs.<job_id>.strategy.matrix`  
-      # to define a matrix of different job configurations. 
-      # A matrix allows you to create multiple jobs by 
-      # performing variable substitution in a single job definition.
-      # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstrategy
     #  matrix:
     #    node-version: [10.x]
     
     # Steps represent a sequence of tasks that will be executed as part of the job
+    # * `Steps` can do three types of behaviors:
+    #   * `run` commands (CLI commands in OS)
+    #   * `uses` actions (offer by Github workflow or contributors)
+    #   * `with` to setting extensive variables (? not very sure...)
     steps:
-      # `Steps` can do three types of behaviors:
-      # * `run` commands (CLI commands in OS)
-      # * `uses` actions (offer by Github workflow or contributors)
-      # * `with` to setting extensive variables (? not very sure...)
-      
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3 # to check details: https://github.com/actions/checkout
-        #with:
-        #  ref: gh-pages
-
-      # Install node.js
-      #- name: Use Node.js ${{ matrix.node-version }}
-      #  uses: actions/setup-node@v1
-      #  with:
-      #    node-version: ${{ matrix.node-version }}
-      #
-      #- name: Install Node.js npm (Node Package Manager) dependencies 
-      #  run: npm install
-      #
-      ## The most important step: create package.json
-      ##   https://github.com/easingthemes/ssh-deploy/issues/45
-      #- name: npm init
-      #  run: npm init -y
-      #
-      ## Creates a build directory with a production build of your app.
-      #- name: Run build task
-      #  run: |
-      #    npm run build --if-present
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it.
+      # To know more details: https://github.com/actions/checkout
+      - uses: actions/checkout@v3 
+      # with:
+      #  [!] if no arguments here, only pull origin main fetch-depth=1 
 
       # Use peaceiris actions-gh-pages to deploy dist to gh-pages
       #- name: Deploy
@@ -83,9 +63,11 @@ jobs:
       #    publish_dir: ./dist
       #    commit_message: ${{ github.event.head_commit.message }}
       
-      # Method is referenced from https://reurl.cc/Go9k6x
+      # 
       - name: Commit files
         run: |
+          git config --local user.name $USER_NAME
+          git config --local user.email $USER_EMAIL
           git status
           echo 1
           git branch
