@@ -26,6 +26,8 @@ jobs:
     
     # The type of runner that the job will run on
     runs-on: ubuntu-20.04 # or ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
 
     # Define environment variables
     #env:
@@ -51,17 +53,27 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it.
       # To know more details: https://github.com/actions/checkout
       - uses: actions/checkout@v3 
-      # with:
-      #  [!] if no arguments here, only pull origin main fetch-depth=1 
+      with:
+        submodules: true  # Fetch Hugo themes (true OR recursive)
+        fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: '0.85.0'
+
+      - name: Build
+        run: hugo --minify
 
       # Use peaceiris actions-gh-pages to deploy dist to gh-pages
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/main' }}
         with:
           # github will auto-generate a token for this job and use it 
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public # default
-          commit_message: ${{ github.event.head_commit.message }}
+          #commit_message: ${{ github.event.head_commit.message }}
       
       # The easiest way to implement  
       #- name: Branch gh-pages and push -f
