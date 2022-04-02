@@ -84,12 +84,15 @@ jobs:
       # Method is referenced from https://reurl.cc/Go9k6x
       - name: Commit files
         run: |
-          ls -a
+          cd $PUBLISH_DIR
+          git init
           git config --local user.name $USER_NAME
           git config --local user.email $USER_EMAIL
-          git pull
-          echo 1
+          ls -a
+          echo 0
           git status
+          echo 1
+          git remote add origin https://$MY_SECRET@github.com/$GITHUB_REPOSITORY.git
           echo 2
           git checkout -b gh-pages
           echo 3
@@ -97,5 +100,5 @@ jobs:
           echo 4
           git commit -m "Automatically deploy to Github pages"
           echo 5
-          git push --set-upstream origin gh-pages
-          echo 😎 deploy gh-pages complete.
+          git push origin gh-pages -f
+          echo Deploy gh-pages complete. 😎
