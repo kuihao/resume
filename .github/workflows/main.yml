@@ -87,6 +87,7 @@ jobs:
           ls -a
           git config --local user.name $USER_NAME
           git config --local user.email $USER_EMAIL
+          git pull
           echo 1
           git status
           echo 2
