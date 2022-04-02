@@ -1,6 +1,6 @@
 # HiHi I'm Kuihao
 # This is a workflow to help you define actions which you want to deploy the pages on main branch
-# And the code below is edited from https://reurl.cc/Go9k6x
+# And the code below is edited from https://reurl.cc/Go9k6x and https://github.com/easingthemes/ssh-deploy/issues/45
 
 # The name of your workflow
 name: deploy gh-pages
@@ -28,24 +28,29 @@ jobs:
     runs-on: ubuntu-20.04
     #runs-on: ubuntu-latest
 
-    # ???
-    #env:
-    #  MY_SECRET   : ${{secrets.commit_secret}}
-    #  USER_NAME   : githubaction
-    #  USER_EMAIL  : githubaction@fake.com
-    #  PUBLISH_DIR : ./dist
+    # Define environment variables
+    env:
+      MY_SECRET   : ${{secrets.commit_secret}}
+      USER_NAME   : Kuihao_Notebook_Win10
+      USER_EMAIL  : kuihaochang@gmail.com
+      PUBLISH_DIR : ./dist # Generated from  
     
-    # ??? global variables?
     strategy:
+      # Use `jobs.<job_id>.strategy.matrix`  
+      # to define a matrix of different job configurations. 
+      # A matrix allows you to create multiple jobs by 
+      # performing variable substitution in a single job definition.
+      # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstrategy
       matrix:
         node-version: [10.x]
     
     # Steps represent a sequence of tasks that will be executed as part of the job
-    # `Steps` can do three types of behaviors:
-    # * `run` commands (CLI commands in OS)
-    # * `uses` actions (offer by Github workflow or contributors)
-    # * `with` to setting extensive variables (? not very sure...)
     steps:
+      # `Steps` can do three types of behaviors:
+      # * `run` commands (CLI commands in OS)
+      # * `uses` actions (offer by Github workflow or contributors)
+      # * `with` to setting extensive variables (? not very sure...)
+      
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3 # to check details: https://github.com/actions/checkout
       
@@ -56,42 +61,43 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install Node.js npm (Node Package Manager) dependencies 
-        run: npm install
+        run: |
+          dir
+          npm install
+          dir
 
+      # The most important step: 
+      #   https://github.com/easingthemes/ssh-deploy/issues/45
       - name: npm init
-        run: npm init -y
+        run: |
+        npm init -y
+        dir
 
+      # Creates a build directory with a production build of your app.
       - name: Run build task
-        run: npm run build --if-present
-      
-      #- name: Creates a build directory with a production build of your app.
-      #  run: npm run build
-      #  env:
-      #    CI: false
+        run: |
+        npm run build --if-present
+        dir
 
-      #- name: npm run build
-      #  run: |
-      #    npm run gulp m
-      #    npm run build
+      # Use peaceiris actions-gh-pages to deploy dist to gh-pages
+      #- name: Deploy
+      #  uses: peaceiris/actions-gh-pages@v3
+      #  with:
+      #    # github will auto-generate a token for this job and use it 
+      #    github_token: ${{ secrets.GITHUB_TOKEN }}
+      #    publish_dir: ./dist
       
-      # use actions-gh-pages to deploy dist to gh-pages
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          # github will auto-generate a token for this job and use it 
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-
-      #- name: Commit files
-      #  run: |
-      #    cd $PUBLISH_DIR
-      #    git init
-      #    git config --local user.name $USER_NAME
-      #    git config --local user.email $USER_EMAIL
-      #    git status
-      #    git remote add origin https://$MY_SECRET@github.com/$GITHUB_REPOSITORY.git
-      #    git checkout -b gh-pages
-      #    git add --all
-      #    git commit -m "deploy to Github pages"
-      #    git push origin gh-pages -f
-      #    echo 😎 deploy gh-pages complete.
+      # Method is referenced from https://reurl.cc/Go9k6x
+      - name: Commit files
+        run: |
+          cd $PUBLISH_DIR
+          git init
+          git config --local user.name $USER_NAME
+          git config --local user.email $USER_EMAIL
+          git status
+          git remote add origin https://$MY_SECRET@github.com/$GITHUB_REPOSITORY.git
+          git checkout -b gh-pages
+          git add --all
+          git commit -m "Automatically deploy to Github pages"
+          git push origin gh-pages -f
+          echo 😎 deploy gh-pages complete.
